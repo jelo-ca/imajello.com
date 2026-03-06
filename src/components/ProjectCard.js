@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const STATUS_STYLE = {
   'Shipped':     { background: 'var(--charcoal)', color: 'var(--cream)' },
@@ -26,35 +27,50 @@ export default function ProjectCard({ project }) {
           {project.status && (
             <span className="project-status" style={statusStyle}>{project.status}</span>
           )}
-          <span className="expand-icon">{expanded ? '▼' : '▶'}</span>
+          <motion.span
+            className="expand-icon"
+            animate={{ rotate: expanded ? 90 : 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            ▶
+          </motion.span>
         </div>
       </div>
 
-      {expanded && (
-        <div className="project-details">
-          <p className="project-description">{project.description}</p>
-          <ul className="bullet-list small project-bullets">
-            {project.bullets.map((b, i) => (
-              <li key={i}><span className="blt">►</span>{b}</li>
-            ))}
-          </ul>
-          <div className="project-tags">
-            {project.tech.map(t => (
-              <span key={t} className="tech-tag">{t}</span>
-            ))}
-          </div>
-          {project.url && (
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="project-link"
-            >
-              Visit Site →
-            </a>
-          )}
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            className="project-details"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            <p className="project-description">{project.description}</p>
+            <ul className="bullet-list small project-bullets">
+              {project.bullets.map((b, i) => (
+                <li key={i}><span className="blt">►</span>{b}</li>
+              ))}
+            </ul>
+            <div className="project-tags">
+              {project.tech.map(t => (
+                <span key={t} className="tech-tag">{t}</span>
+              ))}
+            </div>
+            {project.url && (
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="project-link"
+              >
+                Visit Site →
+              </a>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
