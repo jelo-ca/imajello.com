@@ -1,38 +1,480 @@
-.App {
-  text-align: center;
+/* ══════════════════════════════════════════
+   imajello — DnD Stat Sheet Portfolio
+   ══════════════════════════════════════════ */
+
+:root {
+  --cream:    #f3f1e8;
+  --sand:     #e5d8ca;
+  --blush:    #f2c6c2;
+  --rose:     #dc9e95;
+  --midnight: #000000;
+  --charcoal: #1e1e1d;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+/* ── PAGE WRAPPER ── */
+.app-bg {
   min-height: 100vh;
+  background: var(--sand);
+  background-image:
+    radial-gradient(ellipse at 15% 15%, rgba(242,198,194,0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 85%, rgba(220,158,149,0.15) 0%, transparent 55%);
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2.5rem 1rem;
+}
+
+/* ── KONAMI DARK MODE ── */
+.konami { background: #111; }
+.konami .sheet {
+  background: #1a1a19;
+  border-color: var(--rose);
+  color: var(--cream);
+}
+.konami .panel          { border-color: var(--rose); background: rgba(220,158,149,0.05); }
+.konami .panel-title    { color: var(--rose); border-color: rgba(220,158,149,0.3); }
+.konami .character-name { color: var(--blush); }
+.konami .stat-box       { background: #222; border-color: var(--rose); }
+.konami .stat-mod       { background: #333; border-color: var(--rose); }
+.konami .class-line     { color: var(--sand); }
+.konami .ornament-divider span { color: var(--rose); }
+.konami .mode-btn       { color: var(--cream); border-color: var(--rose); }
+.konami .mode-btn.active { background: var(--rose); color: var(--midnight); }
+.konami .mode-toggle    { border-color: var(--rose); }
+.konami .project-card   { background: #222; border-color: var(--rose); }
+.konami .project-header:hover { background: #2a2a29; }
+.konami .edu-label      { color: var(--rose); }
+.konami .tech-tag       { background: #2a2a29; border-color: var(--rose); color: var(--cream); }
+.konami .sheet-footer   { border-color: rgba(220,158,149,0.2); color: var(--sand); }
+
+/* ── SHEET ── */
+.sheet {
+  background: var(--cream);
+  width: 100%;
+  max-width: 980px;
+  border: 2px solid var(--charcoal);
+  box-shadow:
+    5px 5px 0 var(--sand),
+    7px 7px 0 var(--charcoal),
+    0 24px 64px rgba(0,0,0,0.28);
+  padding: 2.25rem 2.5rem;
+}
+
+/* ── HEADER ── */
+.sheet-header {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.name-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.character-name {
+  font-family: 'MedievalSharp', serif;
+  font-size: 3rem;
+  letter-spacing: 0.04em;
+  color: var(--charcoal);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+  line-height: 1.1;
+}
+.character-name:hover { color: var(--rose); }
+
+.dice-popup {
+  position: absolute;
+  top: -2.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--charcoal);
+  color: var(--cream);
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  padding: 0.28rem 0.9rem;
+  border: 1px solid var(--rose);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fadeUp 0.3s ease forwards;
+  z-index: 20;
+}
+.dice-popup.nat20 { background: var(--rose); color: var(--midnight); font-weight: 600; }
+.dice-popup.nat1  { background: #555; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.class-line {
+  margin: 0.55rem 0 0.35rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 1.05rem;
+  color: var(--charcoal);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+.sep { color: var(--rose); }
+
+.gpa-label {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.gpa-label:hover { color: var(--rose); }
+.gpa-flash       { color: var(--rose); font-style: italic; font-weight: 600; }
+
+.flavor-italic {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--charcoal);
+  opacity: 0.75;
+  margin-bottom: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ── MODE TOGGLE ── */
+.mode-toggle {
+  display: inline-flex;
+  margin-top: 0.85rem;
+  border: 1.5px solid var(--charcoal);
+  overflow: hidden;
+}
+.mode-btn {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  padding: 0.38rem 1.25rem;
+  background: transparent;
+  border: none;
+  border-right: 1.5px solid var(--charcoal);
+  cursor: pointer;
+  color: var(--charcoal);
+  transition: background 0.15s, color 0.15s;
+}
+.mode-btn:last-child          { border-right: none; }
+.mode-btn.active              { background: var(--charcoal); color: var(--cream); }
+.mode-btn:hover:not(.active)  { background: var(--sand); }
+
+/* ── ORNAMENTAL DIVIDER ── */
+.ornament-divider {
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 0.5rem;
+  margin: 1.1rem 0;
+}
+.ornament-divider::before,
+.ornament-divider::after {
+  content: '';
+  flex: 1;
+  height: 1.5px;
+  background: var(--charcoal);
+}
+.ornament-divider span {
+  font-size: 0.65rem;
+  color: var(--rose);
+  line-height: 1;
 }
 
-.App-link {
-  color: #61dafb;
+/* ── BODY GRID ── */
+.sheet-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4rem;
+  align-items: start;
+}
+@media (max-width: 680px) {
+  .sheet-body         { grid-template-columns: 1fr; }
+  .sheet              { padding: 1.5rem 1.25rem; }
+  .character-name     { font-size: 2.2rem; }
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.col { display: flex; flex-direction: column; gap: 1.2rem; }
+
+/* ── PANEL ── */
+.panel {
+  border: 1.5px solid var(--charcoal);
+  padding: 0.9rem 1rem;
+  background: rgba(255,255,255,0.25);
+}
+.panel-title {
+  font-family: 'MedievalSharp', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  margin-bottom: 0.7rem;
+  padding-bottom: 0.38rem;
+  border-bottom: 1px solid var(--sand);
+}
+
+/* ── STAT BLOCK ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.stat-box {
+  border: 1.5px solid var(--charcoal);
+  text-align: center;
+  padding: 0.45rem 0.25rem 0.5rem;
+  background: var(--cream);
+}
+.stat-name {
+  font-family: 'MedievalSharp', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--rose);
+  text-transform: uppercase;
+}
+.stat-score {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--charcoal);
+}
+.stat-mod {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.8rem;
+  color: var(--charcoal);
+  background: var(--sand);
+  display: inline-block;
+  padding: 0 0.45rem;
+  border: 1px solid var(--charcoal);
+  margin: 0.18rem 0;
+}
+.stat-label {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.62rem;
+  color: var(--charcoal);
+  opacity: 0.7;
+  margin-top: 0.18rem;
+}
+
+/* ── BULLET LIST ── */
+.bullet-list {
+  list-style: none;
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+}
+.bullet-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+}
+.blt {
+  color: var(--rose);
+  font-size: 0.55rem;
+  flex-shrink: 0;
+}
+.bullet-list.small {
+  font-size: 0.88rem;
+  margin-top: 0.25rem;
+}
+.bullet-list.small li { padding: 0.1rem 0; }
+
+/* ── CONTACT LINKS ── */
+.contact-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin: 0.3rem 0 0.6rem;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+}
+.contact-links a {
+  color: var(--charcoal);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rose);
+  transition: color 0.15s;
+}
+.contact-links a:hover { color: var(--rose); }
+.konami .contact-links a { color: var(--sand); border-color: var(--rose); }
+
+/* ── ENTRY BLOCKS (education / experience / leadership) ── */
+.entry-block {
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--sand);
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+}
+.entry-label {
+  font-family: 'MedievalSharp', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rose);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.entry-item {
+  margin-bottom: 0.75rem;
+}
+.entry-item:last-child { margin-bottom: 0; }
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+.entry-dates {
+  font-size: 0.82rem;
+  opacity: 0.65;
+  white-space: nowrap;
+  font-style: italic;
+}
+.entry-sub {
+  font-size: 0.88rem;
+  opacity: 0.75;
+  margin-bottom: 0.25rem;
+}
+.entry-meta {
+  font-size: 0.85rem;
+  opacity: 0.65;
+  line-height: 1.45;
+  margin-top: 0.1rem;
+}
+.muted-italic {
+  font-style: italic;
+  opacity: 0.6;
+  font-family: 'EB Garamond', serif;
+}
+
+/* ── LANGUAGE LINE ── */
+.lang-line {
+  margin-top: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--sand);
+  font-family: 'EB Garamond', serif;
+  font-size: 0.88rem;
+  font-style: italic;
+  opacity: 0.65;
+}
+
+/* ── PROJECT CARD ── */
+.project-card {
+  border: 1.5px solid var(--charcoal);
+  margin-bottom: 0.6rem;
+  background: var(--cream);
+}
+.project-card:last-child { margin-bottom: 0; }
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  transition: background 0.12s;
+  user-select: none;
+}
+.project-header:hover { background: var(--sand); }
+
+.project-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.project-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.project-name   { font-weight: 600; }
+.project-dates  { font-size: 0.8rem; font-style: italic; opacity: 0.65; }
+.project-status {
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+.expand-icon { font-size: 0.6rem; color: var(--rose); }
+
+.project-bullets { margin: 0.4rem 0; }
+
+.project-details {
+  padding: 0.65rem 0.75rem 0.75rem;
+  border-top: 1px solid var(--sand);
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.project-description { margin-bottom: 0.5rem; }
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+.tech-tag {
+  background: var(--sand);
+  border: 1px solid var(--charcoal);
+  font-family: 'EB Garamond', serif;
+  font-size: 0.78rem;
+  padding: 0.08rem 0.55rem;
+}
+.project-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  color: var(--charcoal);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rose);
+  transition: color 0.15s;
+}
+.project-link:hover { color: var(--rose); }
+
+/* ── D&D DICE BUTTON ── */
+.dice-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0 0.15rem;
+  margin-left: 0.1rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* ── KONAMI HINT ── */
+.konami-hint {
+  border-style: dashed;
+  text-align: center;
+}
+.tiny-hint {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  color: var(--charcoal);
+  opacity: 0.35;
+}
+
+/* ── FOOTER ── */
+.sheet-footer {
+  margin-top: 1.5rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--sand);
+  text-align: center;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.85rem;
+  color: var(--charcoal);
+  opacity: 0.5;
 }
