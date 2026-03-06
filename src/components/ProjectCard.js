@@ -35,7 +35,7 @@ export default function ProjectCard({ project }) {
           <p className="project-description">{project.description}</p>
           <ul className="bullet-list small project-bullets">
             {project.bullets.map((b, i) => (
-              <li key={i}><span className="blt">✦</span>{b}</li>
+              <li key={i}><span className="blt">►</span>{b}</li>
             ))}
           </ul>
           <div className="project-tags">
