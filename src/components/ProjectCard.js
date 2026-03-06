@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { sfx } from '../utils/sounds';
 
 const STATUS_STYLE = {
   'Shipped':     { background: 'var(--charcoal)', color: 'var(--cream)' },
@@ -15,7 +16,7 @@ export default function ProjectCard({ project }) {
     <div className={`project-card ${expanded ? 'expanded' : ''}`}>
       <div
         className="project-header"
-        onClick={() => setExpanded(e => !e)}
+        onClick={() => setExpanded(e => { e ? sfx.close() : sfx.open(); return !e; })}
         role="button"
         aria-expanded={expanded}
       >

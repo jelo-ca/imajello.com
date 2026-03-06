@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 import StatBlock from './components/StatBlock';
 import ProjectCard from './components/ProjectCard';
+import SettingsPanel from './components/SettingsPanel';
+import CreditsPanel from './components/CreditsPanel';
+import { sfx, setSfxVolume, setMusicVolume } from './utils/sounds';
 import { personalInfo, resumeModes, projects, experience, leadership } from './data/portfolioData';
 
 const MODES = ['AI/ML', 'Fullstack', 'Gamedev'];
@@ -30,26 +33,43 @@ const sidebarModeVariants = {
 };
 
 export default function App() {
-  const [mode, setMode]               = useState('AI/ML');
-  const [diceResult, setDiceResult]   = useState(null);
-  const [diceRolling, setDiceRolling] = useState(false);
-  const [gpaFlash, setGpaFlash]       = useState(false);
-  const [konamiMode, setKonamiMode]   = useState(false);
-  const konamiRef                     = useRef([]);
+  const [mode, setMode]                     = useState('AI/ML');
+  const [diceResult, setDiceResult]         = useState(null);
+  const [diceRolling, setDiceRolling]       = useState(false);
+  const [gpaFlash, setGpaFlash]             = useState(false);
+  const [darkMode, setDarkMode]             = useState(false);
+  const [scanlines, setScanlines]           = useState(false);
+  const [settingsOpen, setSettingsOpen]     = useState(false);
+  const [creditsOpen, setCreditsOpen]       = useState(false);
+  const [konamiOverlay, setKonamiOverlay]   = useState(false);
+  const [konamiUnlocked, setKonamiUnlocked] = useState(false);
+  const [glitching, setGlitching]           = useState(false);
+  const [sfxVol, setSfxVol]                 = useState(0.7);
+  const [musicVol, setMusicVol]             = useState(0);
+  const konamiRef                           = useRef([]);
 
-  const currentMode     = resumeModes[mode];
-  const modeProjects    = projects.filter(p => p.modes.includes(mode));
-  const modeExperience  = experience.filter(e => e.modes.includes(mode));
+  useEffect(() => { setSfxVolume(sfxVol); }, [sfxVol]);
+  useEffect(() => { setMusicVolume(musicVol); }, [musicVol]);
+
+  const currentMode    = resumeModes[mode];
+  const modeProjects   = projects.filter(p => p.modes.includes(mode));
+  const modeExperience = experience.filter(e => e.modes.includes(mode));
 
   function handleNameClick() {
     if (diceRolling) return;
     setDiceRolling(true);
+    sfx.diceRoll();
     const result = rollD20();
-    setTimeout(() => { setDiceResult(result); setDiceRolling(false); }, 400);
+    setTimeout(() => {
+      setDiceResult(result);
+      setDiceRolling(false);
+      if (result === 20) sfx.nat20();
+    }, 400);
     setTimeout(() => setDiceResult(null), 2500);
   }
 
   function handleGpaClick() {
+    sfx.nat20();
     setGpaFlash(true);
     setTimeout(() => setGpaFlash(false), 1600);
   }
@@ -58,23 +78,41 @@ export default function App() {
     function handleKey(e) {
       const next = [...konamiRef.current, e.key].slice(-KONAMI.length);
       konamiRef.current = next;
-      if (next.join(',') === KONAMI.join(',')) setKonamiMode(k => !k);
+      if (next.join(',') === KONAMI.join(',')) {
+        sfx.konami();
+        setKonamiOverlay(true);
+        setKonamiUnlocked(true);
+        setGlitching(true);
+        setTimeout(() => setGlitching(false), 450);
+        setTimeout(() => setKonamiOverlay(false), 4000);
+      }
     }
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
 
   function handleDndRoll() {
+    sfx.diceRoll();
     const r = rollD20();
-    alert(
-      r === 20 ? `🎲 NATURAL 20! The dungeon trembles.` :
-      r === 1  ? `🎲 Nat 1. You trip over your dice bag.` :
-                 `🎲 You rolled a ${r}.`
-    );
+    setTimeout(() => {
+      if (r === 20) sfx.nat20();
+      alert(
+        r === 20 ? `🎲 NATURAL 20! The dungeon trembles.` :
+        r === 1  ? `🎲 Nat 1. You trip over your dice bag.` :
+                   `🎲 You rolled a ${r}.`
+      );
+    }, 350);
   }
 
+  const appClass = [
+    'app-bg',
+    darkMode   ? 'konami'    : '',
+    scanlines  ? 'scanlines' : '',
+    glitching  ? 'glitching' : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className={`app-bg ${konamiMode ? 'konami' : ''}`}>
+    <div className={appClass}>
       <motion.div
         className="sheet"
         initial={{ opacity: 0, y: 20 }}
@@ -137,7 +175,7 @@ export default function App() {
                 <button
                   key={m}
                   className={`mode-btn ${mode === m ? 'active' : ''}`}
-                  onClick={() => setMode(m)}
+                  onClick={() => { sfx.modeSwitch(); setMode(m); }}
                 >
                   {m}
                 </button>
@@ -149,7 +187,6 @@ export default function App() {
             <span>■</span><span>■</span><span>■</span>
           </div>
 
-          {/* Mode-reactive sidebar content */}
           <AnimatePresence mode="wait">
             <motion.div
               key={mode}
@@ -280,7 +317,23 @@ export default function App() {
                 </motion.div>
 
                 <motion.div className="panel konami-hint" variants={panelVariants}>
-                  <p className="tiny-hint">↑ ↑ ↓ ↓ ← → ← → B A</p>
+                  <AnimatePresence mode="wait">
+                    {konamiUnlocked ? (
+                      <motion.div
+                        key="unlocked"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <p className="tiny-hint">★ SECRET FOUND ★</p>
+                        <p className="tiny-hint konami-unlocked-sub">CHEAT CODE: IDDQD</p>
+                      </motion.div>
+                    ) : (
+                      <motion.div key="locked" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <p className="tiny-hint">↑ ↑ ↓ ↓ ← → ← → B A</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
 
               </div>
@@ -292,6 +345,85 @@ export default function App() {
           <span>© {new Date().getFullYear()} Anjoelo Calderon</span>
         </footer>
       </motion.div>
+
+      {/* ── NAV FAB ── */}
+      <div className="nav-fab">
+        <a
+          className="nav-btn"
+          href={`mailto:${personalInfo.email}`}
+          onMouseEnter={() => sfx.navHover()}
+          onClick={() => sfx.click()}
+        >
+          [START]
+        </a>
+        <button
+          className="nav-btn secondary"
+          onMouseEnter={() => sfx.navHover()}
+          onClick={() => { sfx.open(); setCreditsOpen(true); }}
+        >
+          [CREDITS]
+        </button>
+        <button
+          className="nav-btn secondary"
+          onMouseEnter={() => sfx.navHover()}
+          onClick={() => { sfx.open(); setSettingsOpen(true); }}
+        >
+          [OPTIONS]
+        </button>
+      </div>
+
+      {/* ── SETTINGS PANEL ── */}
+      <AnimatePresence>
+        {settingsOpen && (
+          <SettingsPanel
+            onClose={() => { sfx.close(); setSettingsOpen(false); }}
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+            scanlines={scanlines}
+            setScanlines={setScanlines}
+            sfxVol={sfxVol}
+            setSfxVol={setSfxVol}
+            musicVol={musicVol}
+            setMusicVol={setMusicVol}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ── CREDITS PANEL ── */}
+      <AnimatePresence>
+        {creditsOpen && (
+          <CreditsPanel onClose={() => { sfx.close(); setCreditsOpen(false); }} />
+        )}
+      </AnimatePresence>
+
+      {/* ── KONAMI ACHIEVEMENT OVERLAY ── */}
+      <AnimatePresence>
+        {konamiOverlay && (
+          <motion.div
+            className="konami-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setKonamiOverlay(false)}
+          >
+            <motion.div
+              className="konami-achievement"
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.6, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+            >
+              <p className="konami-ach-eyebrow">★ ACHIEVEMENT UNLOCKED ★</p>
+              <p className="konami-ach-title">CHEAT CODE</p>
+              <p className="konami-ach-title">ACTIVATED</p>
+              <p className="konami-ach-sub">+99 TO ALL STATS</p>
+              <p className="konami-ach-sub">INFINITE LIVES GRANTED</p>
+              <p className="konami-ach-footer">[ CLICK TO CONTINUE ]</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
