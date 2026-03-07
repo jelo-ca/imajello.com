@@ -149,7 +149,7 @@
     4px 4px 0 var(--charcoal),
     8px 8px 0 var(--rose);
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 312px 1fr;
   grid-template-rows: 1fr auto;
   grid-template-areas:
     "sidebar main"
@@ -303,7 +303,7 @@
 /* ── MODE TOGGLE ── */
 .mode-toggle {
   display: inline-flex;
-  margin-top: 0.5rem;
+  margin: 0.5rem 1rem 0;
   border: 2px solid var(--charcoal);
   overflow: hidden;
 }
@@ -506,10 +506,10 @@
 /* ── CONTACT LINKS ── */
 .contact-links {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.55rem;
-  flex-wrap: wrap;
+  gap: 0.35rem;
   margin: 0.3rem 0 0.6rem;
   font-family: 'VT323', monospace;
   font-size: 1.05rem;

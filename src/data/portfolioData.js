@@ -4,6 +4,7 @@ export const personalInfo = {
   location: 'Fremont, CA',
   linkedin: 'https://linkedin.com/in/anjoelo-calderon',
   github: 'https://github.com/jelo-ca',
+  itch: 'https://imajello.itch.io/',
   education: {
     school: 'De Anza College',
     degree: 'Associate in Science for Transfer',
