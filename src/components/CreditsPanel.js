@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 export default function CreditsPanel({ onClose }) {
   return (
@@ -15,15 +15,23 @@ export default function CreditsPanel({ onClose }) {
         initial={{ scale: 0.88, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.88, opacity: 0 }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
-        onClick={e => e.stopPropagation()}
+        transition={{ duration: 0.18, ease: "easeOut" }}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="settings-title">══ CREDITS ══</div>
         <div className="settings-divider" />
 
         <div className="credits-body">
-          <p className="credits-placeholder">COMING SOON</p>
-          <p className="credits-sub">[ fill in later ]</p>
+          <p className="credits-sub">Website</p>
+          <p className="credits-placeholder">Anjoelo Calderon</p>
+          <p className="credits-sub" style={{ marginTop: "1rem" }}>
+            Music
+          </p>
+          <p className="credits-placeholder">Jayla</p>
+          <p className="credits-sub" style={{ marginTop: "1rem" }}>
+            Tool
+          </p>
+          <p className="credits-placeholder">CLAUDE</p>
         </div>
 
         <div className="settings-divider" />
