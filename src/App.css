@@ -13,7 +13,8 @@
 
 /* ── PAGE WRAPPER ── */
 .app-bg {
-  min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
   background: var(--sand);
   background-image:
     radial-gradient(ellipse at 15% 15%, rgba(242, 198, 194, 0.2) 0%, transparent 55%),
@@ -23,8 +24,8 @@
   background-size: auto, auto, 20px 20px, 20px 20px;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 2.5rem 1rem;
+  align-items: stretch;
+  padding: 1rem 1rem 1.25rem 1rem;
 }
 
 /* ── KONAMI DARK MODE ── */
@@ -142,33 +143,66 @@
 .sheet {
   background: var(--cream);
   width: 100%;
-  max-width: 1280px;
+  max-width: 1600px;
   border: 2px solid var(--charcoal);
   box-shadow:
     4px 4px 0 var(--charcoal),
     8px 8px 0 var(--rose);
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 280px 1fr;
   grid-template-rows: 1fr auto;
   grid-template-areas:
     "sidebar main"
     "footer  footer";
+  min-height: 0;
+}
+
+/* ── SCROLLBAR ── */
+.sheet-sidebar,
+.sheet-main {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rose) transparent;
+}
+.sheet-sidebar::-webkit-scrollbar,
+.sheet-main::-webkit-scrollbar {
+  width: 5px;
+}
+.sheet-sidebar::-webkit-scrollbar-track,
+.sheet-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sheet-sidebar::-webkit-scrollbar-thumb,
+.sheet-main::-webkit-scrollbar-thumb {
+  background: var(--rose);
+  border-radius: 99px;
+}
+.sheet-sidebar::-webkit-scrollbar-thumb:hover,
+.sheet-main::-webkit-scrollbar-thumb:hover {
+  background: var(--blush);
+}
+.konami .sheet-sidebar,
+.konami .sheet-main {
+  scrollbar-color: var(--rose) transparent;
 }
 
 /* ── SIDEBAR ── */
 .sheet-sidebar {
   grid-area: sidebar;
   border-right: 2px solid var(--charcoal);
-  padding: 2rem 1.5rem;
+  padding: 1.25rem 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.75rem;
+  overflow-y: hidden;
+  min-height: 0;
 }
 
 /* ── MAIN ── */
 .sheet-main {
   grid-area: main;
   padding: 2rem 2rem;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 /* ── HEADER ── */
@@ -186,12 +220,12 @@
 
 .character-name {
   font-family: 'Press Start 2P', monospace;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   letter-spacing: 0.02em;
   color: var(--charcoal);
   cursor: pointer;
   user-select: none;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .character-name:hover {
@@ -224,15 +258,21 @@
 }
 
 .class-line {
-  margin: 0.75rem 0 0.35rem;
+  margin: 0.35rem 0 0.2rem;
   font-family: 'VT323', monospace;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--charcoal);
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.55rem;
   flex-wrap: wrap;
+}
+
+.class-line.sub {
+  margin-top: 0.1rem;
+  font-size: 1rem;
+  opacity: 0.75;
 }
 
 .sep {
@@ -263,7 +303,7 @@
 /* ── MODE TOGGLE ── */
 .mode-toggle {
   display: inline-flex;
-  margin-top: 0.85rem;
+  margin-top: 0.5rem;
   border: 2px solid var(--charcoal);
   overflow: hidden;
 }
@@ -298,8 +338,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   gap: 0.5rem;
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
 }
 
 .ornament-divider::before,
@@ -361,6 +402,10 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
+.sheet-sidebar .panel {
+  padding: 0.55rem 0.75rem;
+}
+
 .panel-title {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.5rem;
@@ -372,23 +417,28 @@
   border-bottom: 2px solid var(--sand);
 }
 
+.sheet-sidebar .panel-title {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+}
+
 /* ── STAT BLOCK ── */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .stat-box {
   border: 2px solid var(--charcoal);
   text-align: center;
-  padding: 0.5rem 0.25rem 0.55rem;
+  padding: 0.3rem 0.2rem 0.3rem;
   background: var(--cream);
 }
 
 .stat-name {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.42rem;
+  font-size: 0.38rem;
   letter-spacing: 0.04em;
   color: var(--rose);
   text-transform: uppercase;
@@ -396,28 +446,28 @@
 
 .stat-score {
   font-family: 'Press Start 2P', monospace;
-  font-size: 1.1rem;
-  line-height: 1.5;
+  font-size: 0.8rem;
+  line-height: 1.3;
   color: var(--charcoal);
 }
 
 .stat-mod {
   font-family: 'VT323', monospace;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--charcoal);
   background: var(--sand);
   display: inline-block;
-  padding: 0 0.45rem;
+  padding: 0 0.35rem;
   border: 2px solid var(--charcoal);
-  margin: 0.18rem 0;
+  margin: 0.06rem 0;
 }
 
 .stat-label {
   font-family: 'VT323', monospace;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--charcoal);
   opacity: 0.7;
-  margin-top: 0.18rem;
+  margin-top: 0.04rem;
 }
 
 /* ── BULLET LIST ── */
@@ -432,6 +482,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.2rem 0;
+}
+
+.sheet-sidebar .bullet-list li {
+  padding: 0.08rem 0;
 }
 
 .blt {
@@ -475,6 +529,27 @@
   color: var(--sand);
   border-color: var(--rose);
 }
+
+/* ── SOCIAL ICONS ── */
+.social-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-left: 0.4rem;
+}
+.social-icon {
+  color: var(--charcoal);
+  border-bottom: none !important;
+  display: flex;
+  align-items: center;
+  opacity: 0.75;
+  transition: opacity 0.15s, color 0.15s;
+}
+.social-icon:hover {
+  color: var(--rose);
+  opacity: 1;
+}
+.konami .social-icon { color: var(--sand); }
 
 /* ── ENTRY BLOCKS (education / experience / leadership) ── */
 .entry-block {
