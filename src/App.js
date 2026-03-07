@@ -5,6 +5,7 @@ import StatBlock from './components/StatBlock';
 import ProjectCard from './components/ProjectCard';
 import SettingsPanel from './components/SettingsPanel';
 import CreditsPanel from './components/CreditsPanel';
+import ContactPanel from './components/ContactPanel';
 import { sfx, setSfxVolume, setMusicVolume } from './utils/sounds';
 import { personalInfo, resumeModes, projects, experience, leadership } from './data/portfolioData';
 
@@ -41,6 +42,7 @@ export default function App() {
   const [scanlines, setScanlines]           = useState(false);
   const [settingsOpen, setSettingsOpen]     = useState(false);
   const [creditsOpen, setCreditsOpen]       = useState(false);
+  const [contactOpen, setContactOpen]       = useState(false);
   const [konamiOverlay, setKonamiOverlay]   = useState(false);
   const [konamiUnlocked, setKonamiUnlocked] = useState(false);
   const [glitching, setGlitching]           = useState(false);
@@ -316,25 +318,6 @@ export default function App() {
                   </div>
                 </motion.div>
 
-                <motion.div className="panel konami-hint" variants={panelVariants}>
-                  <AnimatePresence mode="wait">
-                    {konamiUnlocked ? (
-                      <motion.div
-                        key="unlocked"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <p className="tiny-hint">★ SECRET FOUND ★</p>
-                        <p className="tiny-hint konami-unlocked-sub">CHEAT CODE: IDDQD</p>
-                      </motion.div>
-                    ) : (
-                      <motion.div key="locked" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        <p className="tiny-hint">↑ ↑ ↓ ↓ ← → ← → B A</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
 
               </div>
             </motion.div>
@@ -343,19 +326,35 @@ export default function App() {
 
         <footer className="sheet-footer">
           <span>© {new Date().getFullYear()} Anjoelo Calderon</span>
+          <AnimatePresence mode="wait">
+            {konamiUnlocked ? (
+              <motion.span
+                key="found"
+                className="footer-secret found"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+              >
+                ★ IDDQD
+              </motion.span>
+            ) : (
+              <motion.span key="hidden" className="footer-secret hidden">
+                ↑ ↑ ↓ ↓ ← → ← → B A
+              </motion.span>
+            )}
+          </AnimatePresence>
         </footer>
       </motion.div>
 
       {/* ── NAV FAB ── */}
       <div className="nav-fab">
-        <a
+        <button
           className="nav-btn"
-          href={`mailto:${personalInfo.email}`}
           onMouseEnter={() => sfx.navHover()}
-          onClick={() => sfx.click()}
+          onClick={() => { sfx.open(); setContactOpen(true); }}
         >
           [START]
-        </a>
+        </button>
         <button
           className="nav-btn secondary"
           onMouseEnter={() => sfx.navHover()}
@@ -386,6 +385,13 @@ export default function App() {
             musicVol={musicVol}
             setMusicVol={setMusicVol}
           />
+        )}
+      </AnimatePresence>
+
+      {/* ── CONTACT PANEL ── */}
+      <AnimatePresence>
+        {contactOpen && (
+          <ContactPanel onClose={() => { sfx.close(); setContactOpen(false); }} />
         )}
       </AnimatePresence>
 
