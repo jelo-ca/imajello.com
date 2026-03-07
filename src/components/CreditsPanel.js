@@ -28,10 +28,6 @@ export default function CreditsPanel({ onClose }) {
             Music
           </p>
           <p className="credits-placeholder">Jayla</p>
-          <p className="credits-sub" style={{ marginTop: "1rem" }}>
-            Tool
-          </p>
-          <p className="credits-placeholder">CLAUDE</p>
         </div>
 
         <div className="settings-divider" />

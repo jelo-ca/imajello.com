@@ -367,17 +367,36 @@
 }
 
 @media (max-width: 900px) {
+  html, body, #root {
+    height: auto;
+    overflow: auto;
+  }
+
+  .app-bg {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+    align-items: flex-start;
+  }
+
   .sheet {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
     grid-template-areas:
       "sidebar"
       "main"
       "footer";
+    min-height: 0;
   }
 
   .sheet-sidebar {
     border-right: none;
     border-bottom: 2px solid var(--charcoal);
+    overflow-y: visible;
+  }
+
+  .sheet-main {
+    overflow-y: visible;
   }
 
   .sheet-body {
