@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# imajello
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Interactive portfolio for **Anjoelo Calderon** — styled as a retro arcade / D&D stat sheet.
 
-## Available Scripts
+Live at: _add deployment URL here_
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **React 19** (Create React App)
+- **Framer Motion** — page/panel animations
+- **Web Audio API** — procedural 8-bit SFX + music loop
+- **Formspree** — contact form email delivery
+- Plain **CSS** (no Tailwind)
+- Fonts: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) · [VT323](https://fonts.google.com/specimen/VT323)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Resume modes** — AI/ML · Fullstack · Gamedev, each with different stats, skills, and projects
+- **Expandable project cards** with animated expand/collapse
+- **Settings panel** — dark mode, scanlines, SFX + music volume sliders
+- **Contact form** — Formspree-backed with honeypot + timing anti-bot protection
+- **Credits panel** — placeholder, to be filled
+- **Easter eggs** — see below
 
-### `npm run build`
+### Easter Eggs
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Trigger | Effect |
+|---|---|
+| Click name | Rolls a d20 |
+| Click GPA | NATURAL 20 flash |
+| Click 🎲 next to D&D | Rolls a d20 alert |
+| Konami code `↑↑↓↓←→←→BA` | Glitch + achievement overlay + `★ IDDQD` |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Project Structure
 
-### `npm run eject`
+```
+src/
+  App.js                  — layout, state, easter eggs, nav
+  App.css                 — all styles
+  index.css               — font import + html/body reset
+  utils/
+    sounds.js             — Web Audio API SFX + music engine
+  data/
+    portfolioData.js      — all content (stats, projects, skills)
+  components/
+    StatBlock.js          — 6 D&D-style ability scores
+    ProjectCard.js        — expandable project panels
+    SettingsPanel.js      — options modal
+    ContactPanel.js       — contact form modal
+    CreditsPanel.js       — credits modal
+public/
+  favicon.svg             — pixel-art IJ monogram icon
+  manifest.json
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Getting Started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm install
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+```bash
+npm run build   # production build → /build
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Configuration
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| File | What to update |
+|---|---|
+| `src/data/portfolioData.js` | All content — projects, skills, experience, stats |
+| `src/components/ContactPanel.js` | Formspree endpoint (`FORMSPREE` const) |
+| `src/components/CreditsPanel.js` | Credits content |
+| `public/favicon.svg` | Icon |
