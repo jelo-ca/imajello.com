@@ -2,7 +2,7 @@
 
 Interactive portfolio for **Anjoelo Calderon** — styled as a retro arcade / D&D stat sheet.
 
-Live at: _add deployment URL here_
+Live at: https://imajello.com/
 
 ---
 
