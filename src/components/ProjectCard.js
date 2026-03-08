@@ -8,15 +8,22 @@ const STATUS_STYLE = {
   'Ongoing':     { background: 'var(--sand)',     color: 'var(--charcoal)' },
 };
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onExpand }) {
   const [expanded, setExpanded] = useState(false);
   const statusStyle = STATUS_STYLE[project.status] || {};
+
+  function handleToggle() {
+    const opening = !expanded;
+    setExpanded(opening);
+    if (opening) { sfx.open();  onExpand?.(project.name); }
+    else           sfx.close();
+  }
 
   return (
     <div className={`project-card ${expanded ? 'expanded' : ''}`}>
       <div
         className="project-header"
-        onClick={() => setExpanded(e => { e ? sfx.close() : sfx.open(); return !e; })}
+        onClick={handleToggle}
         role="button"
         aria-expanded={expanded}
       >

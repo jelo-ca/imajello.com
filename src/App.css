@@ -1312,3 +1312,176 @@
 .glitching {
   animation: glitch 0.4s ease-in-out;
 }
+
+/* ── QUEST LOG ── */
+.quest-widget {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+}
+
+.quest-panel {
+  background: var(--cream);
+  border: 2px solid var(--charcoal);
+  box-shadow: 4px 4px 0 var(--charcoal), 6px 6px 0 var(--rose);
+  padding: 1rem 0.75rem 0.85rem;
+  min-width: 175px;
+}
+
+.quest-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.46rem;
+  color: var(--rose);
+  text-align: center;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.6rem;
+}
+
+.quest-divider {
+  border: none;
+  border-top: 1px solid var(--charcoal);
+  opacity: 0.25;
+  margin: 0.5rem 0;
+}
+
+.quest-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.quest-item {
+  font-family: 'VT323', monospace;
+  font-size: 1.05rem;
+  color: var(--charcoal);
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  position: relative;
+}
+
+@keyframes quest-shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-4px); }
+  35%       { transform: translateX(4px); }
+  55%       { transform: translateX(-3px); }
+  75%       { transform: translateX(3px); }
+  90%       { transform: translateX(-1px); }
+}
+
+@keyframes sparkle-fly {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+.quest-item.just-done {
+  animation: quest-shake 0.4s ease-in-out;
+}
+
+.quest-sparkle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  pointer-events: none;
+  animation: sparkle-fly 0.5s ease-out forwards;
+}
+
+.quest-item.done .quest-label {
+  color: var(--rose);
+  text-decoration: line-through;
+  text-decoration-color: var(--rose);
+  opacity: 0.75;
+}
+
+.quest-check {
+  flex-shrink: 0;
+  width: 12px;
+  font-size: 0.75rem;
+  color: var(--rose);
+}
+
+.quest-item:not(.done) .quest-check {
+  color: var(--charcoal);
+  opacity: 0.4;
+}
+
+.quest-frac {
+  opacity: 0.55;
+  font-size: 0.9rem;
+}
+
+.quest-secrets {
+  margin-top: 0.1rem;
+}
+
+.quest-toggle {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.44rem;
+  background: var(--charcoal);
+  color: var(--cream);
+  border: 2px solid var(--charcoal);
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  box-shadow: 3px 3px 0 var(--rose);
+}
+
+.quest-toggle:hover {
+  background: var(--rose);
+  border-color: var(--rose);
+  color: var(--midnight);
+  box-shadow: 3px 3px 0 var(--charcoal);
+}
+
+.quest-toggle.complete {
+  background: var(--rose);
+  border-color: var(--rose);
+  color: var(--midnight);
+  box-shadow: 3px 3px 0 var(--charcoal);
+}
+
+/* dark mode */
+.konami .quest-panel {
+  background: #1a1a19;
+  border-color: var(--rose);
+  box-shadow: 4px 4px 0 var(--rose);
+  color: var(--cream);
+}
+
+.konami .quest-title { color: var(--rose); }
+
+.konami .quest-item { color: var(--sand); }
+
+.konami .quest-item:not(.done) .quest-check { color: var(--sand); }
+
+.konami .quest-divider { border-color: var(--rose); opacity: 0.2; }
+
+.konami .quest-toggle {
+  background: #1a1a19;
+  border-color: var(--rose);
+  color: var(--cream);
+  box-shadow: 3px 3px 0 var(--rose);
+}
+
+.konami .quest-toggle:hover,
+.konami .quest-toggle.complete {
+  background: var(--rose);
+  color: var(--midnight);
+  box-shadow: 3px 3px 0 var(--charcoal);
+}
+
+@media (max-width: 900px) {
+  .quest-widget {
+    top: 1rem;
+    right: 1rem;
+  }
+}

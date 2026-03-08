@@ -6,6 +6,7 @@ import ProjectCard from "./components/ProjectCard";
 import SettingsPanel from "./components/SettingsPanel";
 import CreditsPanel from "./components/CreditsPanel";
 import ContactPanel from "./components/ContactPanel";
+import QuestLog from "./components/QuestLog";
 import { sfx, setSfxVolume, setMusicVolume } from "./utils/sounds";
 import {
   personalInfo,
@@ -73,14 +74,40 @@ export default function App() {
   const [glitching, setGlitching] = useState(false);
   const [sfxVol, setSfxVol] = useState(0.7);
   const [musicVol, setMusicVol] = useState(0);
+  const [quest, setQuest] = useState({
+    logOpen: false,
+    modeSwitched: false,
+    darkModeOn: false,
+    projectsOpened: [],
+    creditsRead: false,
+    contactStarted: false,
+    secretsFound: [],
+  });
   const konamiRef = useRef([]);
 
+  useEffect(() => { setSfxVolume(sfxVol); }, [sfxVol]);
+  useEffect(() => { setMusicVolume(musicVol); }, [musicVol]);
   useEffect(() => {
-    setSfxVolume(sfxVol);
-  }, [sfxVol]);
-  useEffect(() => {
-    setMusicVolume(musicVol);
-  }, [musicVol]);
+    if (darkMode) setQuest((q) => ({ ...q, darkModeOn: true }));
+  }, [darkMode]);
+
+  function findSecret(key) {
+    setQuest((q) => ({
+      ...q,
+      secretsFound: q.secretsFound.includes(key)
+        ? q.secretsFound
+        : [...q.secretsFound, key],
+    }));
+  }
+
+  function trackProject(name) {
+    setQuest((q) => ({
+      ...q,
+      projectsOpened: q.projectsOpened.includes(name)
+        ? q.projectsOpened
+        : [...q.projectsOpened, name],
+    }));
+  }
 
   const currentMode = resumeModes[mode];
   const modeProjects = projects.filter((p) => p.modes.includes(mode));
@@ -88,6 +115,7 @@ export default function App() {
 
   function handleNameClick() {
     if (diceRolling) return;
+    findSecret("name");
     setDiceRolling(true);
     sfx.diceRoll();
     const result = rollD20();
@@ -100,6 +128,7 @@ export default function App() {
   }
 
   function handleGpaClick() {
+    findSecret("gpa");
     sfx.nat20();
     setGpaFlash(true);
     setTimeout(() => setGpaFlash(false), 1600);
@@ -110,6 +139,7 @@ export default function App() {
       const next = [...konamiRef.current, e.key].slice(-KONAMI.length);
       konamiRef.current = next;
       if (next.join(",") === KONAMI.join(",")) {
+        findSecret("konami");
         sfx.konami();
         setKonamiOverlay(true);
         setKonamiUnlocked(true);
@@ -123,6 +153,7 @@ export default function App() {
   }, []);
 
   function handleDndRoll() {
+    findSecret("dice");
     sfx.diceRoll();
     const r = rollD20();
     setTimeout(() => {
@@ -269,6 +300,7 @@ export default function App() {
                   className={`mode-btn ${mode === m ? "active" : ""}`}
                   onClick={() => {
                     sfx.modeSwitch();
+                    if (m !== mode) setQuest((q) => ({ ...q, modeSwitched: true }));
                     setMode(m);
                   }}
                 >
@@ -339,7 +371,7 @@ export default function App() {
                     </p>
                   ) : (
                     modeProjects.map((p) => (
-                      <ProjectCard key={p.name} project={p} />
+                      <ProjectCard key={p.name} project={p} onExpand={trackProject} />
                     ))
                   )}
                 </motion.div>
@@ -480,6 +512,7 @@ export default function App() {
           onClick={() => {
             sfx.open();
             setContactOpen(true);
+            setQuest((q) => ({ ...q, contactStarted: true }));
           }}
         >
           [START]
@@ -490,6 +523,7 @@ export default function App() {
           onClick={() => {
             sfx.open();
             setCreditsOpen(true);
+            setQuest((q) => ({ ...q, creditsRead: true }));
           }}
         >
           [CREDITS]
@@ -549,6 +583,12 @@ export default function App() {
           />
         )}
       </AnimatePresence>
+
+      {/* ── QUEST LOG ── */}
+      <QuestLog
+        quest={quest}
+        onToggle={() => setQuest((q) => ({ ...q, logOpen: !q.logOpen }))}
+      />
 
       {/* ── KONAMI ACHIEVEMENT OVERLAY ── */}
       <AnimatePresence>
