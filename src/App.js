@@ -7,7 +7,7 @@ import SettingsPanel from "./components/SettingsPanel";
 import CreditsPanel from "./components/CreditsPanel";
 import ContactPanel from "./components/ContactPanel";
 import QuestLog from "./components/QuestLog";
-import { sfx, setSfxVolume, setMusicVolume } from "./utils/sounds";
+import { sfx, setSfxVolume } from "./utils/sounds";
 import {
   personalInfo,
   resumeModes,
@@ -29,10 +29,6 @@ const KONAMI = [
   "b",
   "a",
 ];
-
-function rollD20() {
-  return Math.floor(Math.random() * 20) + 1;
-}
 
 const panelVariants = {
   hidden: { opacity: 0, y: 10 },
@@ -61,8 +57,7 @@ const sidebarModeVariants = {
 
 export default function App() {
   const [mode, setMode] = useState("AI/ML");
-  const [diceResult, setDiceResult] = useState(null);
-  const [diceRolling, setDiceRolling] = useState(false);
+  const [nameAlt, setNameAlt] = useState(false);
   const [gpaFlash, setGpaFlash] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [scanlines, setScanlines] = useState(false);
@@ -73,7 +68,6 @@ export default function App() {
   const [konamiUnlocked, setKonamiUnlocked] = useState(false);
   const [glitching, setGlitching] = useState(false);
   const [sfxVol, setSfxVol] = useState(0.7);
-  const [musicVol, setMusicVol] = useState(0);
   const [quest, setQuest] = useState({
     logOpen: false,
     modeSwitched: false,
@@ -88,9 +82,6 @@ export default function App() {
   useEffect(() => {
     setSfxVolume(sfxVol);
   }, [sfxVol]);
-  useEffect(() => {
-    setMusicVolume(musicVol);
-  }, [musicVol]);
   useEffect(() => {
     if (darkMode) setQuest((q) => ({ ...q, darkModeOn: true }));
   }, [darkMode]);
@@ -114,28 +105,22 @@ export default function App() {
   }
 
   const currentMode = resumeModes[mode];
+  const displayStats = konamiUnlocked
+    ? currentMode.stats.map((stat) => ({ ...stat, score: 99 }))
+    : currentMode.stats;
   const modeProjects = projects.filter((p) => p.modes.includes(mode));
   const modeExperience = experience.filter((e) => e.modes.includes(mode));
 
   function handleNameClick() {
-    if (diceRolling) return;
     findSecret("name");
-    setDiceRolling(true);
-    sfx.diceRoll();
-    const result = rollD20();
-    setTimeout(() => {
-      setDiceResult(result);
-      setDiceRolling(false);
-      if (result === 20) sfx.nat20();
-    }, 400);
-    setTimeout(() => setDiceResult(null), 2500);
+    sfx.nat20();
+    setNameAlt((prev) => !prev);
   }
 
   function handleGpaClick() {
     findSecret("gpa");
-    sfx.nat20();
-    setGpaFlash(true);
-    setTimeout(() => setGpaFlash(false), 1600);
+    sfx.nameCheer();
+    setGpaFlash((prev) => !prev);
   }
 
   function handleUiHover() {
@@ -159,22 +144,6 @@ export default function App() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
-
-  function handleDndRoll() {
-    findSecret("dice");
-    sfx.diceRoll();
-    const r = rollD20();
-    setTimeout(() => {
-      if (r === 20) sfx.nat20();
-      alert(
-        r === 20
-          ? `🎲 NATURAL 20! The dungeon trembles.`
-          : r === 1
-          ? `🎲 Nat 1. You trip over your dice bag.`
-          : `🎲 You rolled a ${r}.`,
-      );
-    }, 350);
-  }
 
   const appClass = [
     "app-bg",
@@ -201,33 +170,18 @@ export default function App() {
                 className="character-name"
                 onClick={handleNameClick}
                 onMouseEnter={handleUiHover}
-                title="Click to roll for initiative!"
+                title="Click to reveal the nickname!"
               >
-                Anjoelo Calderon
-              </h1>
-              <AnimatePresence>
-                {diceResult !== null && (
-                  <motion.div
-                    className={`dice-popup ${
-                      diceResult === 20
-                        ? "nat20"
-                        : diceResult === 1
-                        ? "nat1"
-                        : ""
-                    }`}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    {diceResult === 20
-                      ? "✦ NATURAL 20!"
-                      : diceResult === 1
-                      ? "✦ Nat 1..."
-                      : `✦ ${diceResult}`}
-                  </motion.div>
+                {nameAlt ? (
+                  <>
+                    Jello
+                    <br />
+                    Calderon
+                  </>
+                ) : (
+                  "Anjoelo Calderon"
                 )}
-              </AnimatePresence>
+              </h1>
             </div>
 
             <p className="class-line">{currentMode.title}</p>
@@ -353,7 +307,7 @@ export default function App() {
               }}
             >
               <motion.div variants={panelVariants}>
-                <StatBlock stats={currentMode.stats} />
+                <StatBlock stats={displayStats} />
               </motion.div>
 
               <motion.div className="panel" variants={panelVariants}>
@@ -469,16 +423,6 @@ export default function App() {
                       <li key={h}>
                         <span className="blt">►</span>
                         {h}
-                        {h === "Dungeons & Dragons" && (
-                          <button
-                            className="dice-btn"
-                            onMouseEnter={handleUiHover}
-                            onClick={handleDndRoll}
-                            title="Roll a d20"
-                          >
-                            🎲
-                          </button>
-                        )}
                       </li>
                     ))}
                   </ul>
@@ -521,11 +465,11 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4 }}
               >
-                ★ IDDQD
+                ★ SECRET UNLOCKED ★
               </motion.span>
             ) : (
               <motion.span key="hidden" className="footer-secret hidden">
-                ↑ ↑ ↓ ↓ ← → ← → B A
+                ▲ ▲ ▼ ▼ <span className="footer-secret-lr">◄ ► ◄ ►</span> B A
               </motion.span>
             )}
           </AnimatePresence>
@@ -582,8 +526,6 @@ export default function App() {
             setScanlines={setScanlines}
             sfxVol={sfxVol}
             setSfxVol={setSfxVol}
-            musicVol={musicVol}
-            setMusicVol={setMusicVol}
           />
         )}
       </AnimatePresence>

@@ -38,7 +38,7 @@ const MAIN_QUESTS = [
   { key: "contactStarted", label: "Begin your journey" },
 ];
 
-const SECRETS_TOTAL = 4;
+const SECRETS_TOTAL = 3;
 
 function isDone(q, quest) {
   if (q.progress) return (quest[q.key]?.length ?? 0) >= q.max;

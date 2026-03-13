@@ -25,10 +25,6 @@ export default function CreditsPanel({ onClose }) {
         <div className="credits-body">
           <p className="credits-sub">Website</p>
           <p className="credits-placeholder">Anjoelo Calderon</p>
-          <p className="credits-sub" style={{ marginTop: "1rem" }}>
-            Music
-          </p>
-          <p className="credits-placeholder">Jayla</p>
         </div>
 
         <div className="settings-divider" />

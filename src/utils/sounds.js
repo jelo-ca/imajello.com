@@ -4,6 +4,7 @@ let sfxGain = null;
 let musicGain = null;
 let musicOsc = null;
 let musicPlaying = false;
+const MUSIC_ENABLED = false;
 
 function getCtx() {
   if (!ctx) {
@@ -33,7 +34,7 @@ function playTone(freq, type, duration, volMul = 1, dest = null) {
   osc.stop(c.currentTime + duration);
 }
 
-function playSeq(notes, type = 'square') {
+function playSeq(notes, type = "square") {
   const c = getCtx();
   notes.forEach(([freq, t, dur]) => {
     const osc = c.createOscillator();
@@ -51,22 +52,48 @@ function playSeq(notes, type = 'square') {
 
 export const sfx = {
   click() {
-    playTone(440, 'square', 0.06, 0.4);
+    playTone(440, "square", 0.06, 0.4);
+  },
+  nameCheer() {
+    playSeq(
+      [
+        [523, 0, 0.06],
+        [659, 0.07, 0.06],
+        [784, 0.14, 0.08],
+        [988, 0.23, 0.12],
+      ],
+      "triangle",
+    );
   },
   navHover() {
-    playTone(330, 'square', 0.04, 0.2);
+    playTone(330, "square", 0.04, 0.2);
   },
   open() {
-    playSeq([[330, 0, 0.07], [440, 0.07, 0.07], [550, 0.14, 0.1]]);
+    playSeq([
+      [330, 0, 0.07],
+      [440, 0.07, 0.07],
+      [550, 0.14, 0.1],
+    ]);
   },
   close() {
-    playSeq([[550, 0, 0.07], [440, 0.07, 0.07], [330, 0.14, 0.1]]);
+    playSeq([
+      [550, 0, 0.07],
+      [440, 0.07, 0.07],
+      [330, 0.14, 0.1],
+    ]);
   },
   toggle() {
-    playSeq([[440, 0, 0.05], [660, 0.06, 0.08]]);
+    playSeq([
+      [440, 0, 0.05],
+      [660, 0.06, 0.08],
+    ]);
   },
   modeSwitch() {
-    playSeq([[220, 0, 0.05], [330, 0.06, 0.05], [440, 0.12, 0.08]]);
+    playSeq([
+      [220, 0, 0.05],
+      [330, 0.06, 0.05],
+      [440, 0.12, 0.08],
+    ]);
   },
   diceRoll() {
     // rapid random tones
@@ -76,7 +103,7 @@ export const sfx = {
       const t = i * 0.04;
       const osc = c.createOscillator();
       const gain = c.createGain();
-      osc.type = 'square';
+      osc.type = "square";
       osc.frequency.setValueAtTime(freq, c.currentTime + t);
       gain.gain.setValueAtTime(0.3, c.currentTime + t);
       gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + t + 0.04);
@@ -87,33 +114,51 @@ export const sfx = {
     }
   },
   nat20() {
-    playSeq([
-      [523, 0,    0.08],
-      [659, 0.08, 0.08],
-      [784, 0.16, 0.08],
-      [1047,0.24, 0.18],
-    ], 'square');
+    playSeq(
+      [
+        [523, 0, 0.08],
+        [659, 0.08, 0.08],
+        [784, 0.16, 0.08],
+        [1047, 0.24, 0.18],
+      ],
+      "square",
+    );
   },
   konami() {
-    playSeq([
-      [262, 0,    0.07],
-      [330, 0.08, 0.07],
-      [392, 0.16, 0.07],
-      [523, 0.24, 0.07],
-      [659, 0.32, 0.07],
-      [784, 0.40, 0.07],
-      [1047,0.48, 0.15],
-      [1047,0.65, 0.15],
-    ], 'square');
+    playSeq(
+      [
+        [262, 0, 0.07],
+        [330, 0.08, 0.07],
+        [392, 0.16, 0.07],
+        [523, 0.24, 0.07],
+        [659, 0.32, 0.07],
+        [784, 0.4, 0.07],
+        [1047, 0.48, 0.15],
+        [1047, 0.65, 0.15],
+      ],
+      "square",
+    );
   },
 };
 
 // C pentatonic arpeggio melody loop
 const MELODY = [
-  [262, 0.12], [330, 0.12], [392, 0.12], [523, 0.12],
-  [659, 0.12], [523, 0.12], [392, 0.12], [330, 0.12],
-  [262, 0.12], [262, 0.12], [330, 0.18], [392, 0.18],
-  [523, 0.24], [392, 0.12], [330, 0.12], [262, 0.24],
+  [262, 0.12],
+  [330, 0.12],
+  [392, 0.12],
+  [523, 0.12],
+  [659, 0.12],
+  [523, 0.12],
+  [392, 0.12],
+  [330, 0.12],
+  [262, 0.12],
+  [262, 0.12],
+  [330, 0.18],
+  [392, 0.18],
+  [523, 0.24],
+  [392, 0.12],
+  [330, 0.12],
+  [262, 0.24],
 ];
 const MELODY_LEN = MELODY.reduce((s, [, d]) => s + d, 0);
 
@@ -126,7 +171,7 @@ function scheduleLoop() {
   MELODY.forEach(([freq, dur]) => {
     const osc = c.createOscillator();
     const gain = c.createGain();
-    osc.type = 'triangle';
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(freq, t);
     gain.gain.setValueAtTime(0.35, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.85);
@@ -140,6 +185,7 @@ function scheduleLoop() {
 }
 
 export function startMusic() {
+  if (!MUSIC_ENABLED) return;
   if (musicPlaying) return;
   musicPlaying = true;
   scheduleLoop();
@@ -156,6 +202,11 @@ export function setSfxVolume(v) {
 }
 
 export function setMusicVolume(v) {
+  if (!MUSIC_ENABLED) {
+    if (musicGain) musicGain.gain.value = 0;
+    stopMusic();
+    return;
+  }
   getCtx();
   musicGain.gain.value = v;
   if (v > 0 && !musicPlaying) startMusic();

@@ -793,6 +793,11 @@
   color: var(--rose);
 }
 
+.footer-secret-lr {
+  display: inline-block;
+  font-size: 1.2em;
+}
+
 /* ── NAV FAB (fixed top-left button group) ── */
 .nav-fab {
   position: fixed;

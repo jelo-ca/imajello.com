@@ -9,8 +9,6 @@ export default function SettingsPanel({
   setScanlines,
   sfxVol,
   setSfxVol,
-  musicVol,
-  setMusicVol,
 }) {
   function handleDarkMode() {
     sfx.toggle();
@@ -83,21 +81,8 @@ export default function SettingsPanel({
           </span>
         </div>
 
-        <div className="settings-slider-row">
-          <span className="settings-slider-label">► MUSIC VOL</span>
-          <input
-            className="settings-slider"
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={musicVol}
-            onMouseEnter={() => sfx.navHover()}
-            onChange={(e) => setMusicVol(parseFloat(e.target.value))}
-          />
-          <span className="settings-slider-value">
-            {Math.round(musicVol * 100)}
-          </span>
+        <div className="settings-row">
+          <span className="settings-row-label">► MUSIC: COMING SOON</span>
         </div>
 
         <div className="settings-divider" />
