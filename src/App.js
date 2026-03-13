@@ -85,8 +85,12 @@ export default function App() {
   });
   const konamiRef = useRef([]);
 
-  useEffect(() => { setSfxVolume(sfxVol); }, [sfxVol]);
-  useEffect(() => { setMusicVolume(musicVol); }, [musicVol]);
+  useEffect(() => {
+    setSfxVolume(sfxVol);
+  }, [sfxVol]);
+  useEffect(() => {
+    setMusicVolume(musicVol);
+  }, [musicVol]);
   useEffect(() => {
     if (darkMode) setQuest((q) => ({ ...q, darkModeOn: true }));
   }, [darkMode]);
@@ -132,6 +136,10 @@ export default function App() {
     sfx.nat20();
     setGpaFlash(true);
     setTimeout(() => setGpaFlash(false), 1600);
+  }
+
+  function handleUiHover() {
+    sfx.navHover();
   }
 
   useEffect(() => {
@@ -192,6 +200,7 @@ export default function App() {
               <h1
                 className="character-name"
                 onClick={handleNameClick}
+                onMouseEnter={handleUiHover}
                 title="Click to roll for initiative!"
               >
                 Anjoelo Calderon
@@ -228,6 +237,7 @@ export default function App() {
               <span
                 className={`gpa-label ${gpaFlash ? "gpa-flash" : ""}`}
                 onClick={handleGpaClick}
+                onMouseEnter={handleUiHover}
                 title="Click me!"
               >
                 {gpaFlash ? "NATURAL 20 ✦" : "GPA: 3.75"}
@@ -237,13 +247,22 @@ export default function App() {
             <p className="flavor-italic">{currentMode.flavor}</p>
 
             <div className="contact-links">
-              <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
-              <div className="social-icons" style={{ width: "100%", justifyContent: "center" }}>
+              <a
+                href={`mailto:${personalInfo.email}`}
+                onMouseEnter={handleUiHover}
+              >
+                {personalInfo.email}
+              </a>
+              <div
+                className="social-icons"
+                style={{ width: "100%", justifyContent: "center" }}
+              >
                 <a
                   href={personalInfo.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-icon"
+                  onMouseEnter={handleUiHover}
                   title="LinkedIn"
                 >
                   <svg
@@ -261,6 +280,7 @@ export default function App() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-icon"
+                  onMouseEnter={handleUiHover}
                   title="GitHub"
                 >
                   <svg
@@ -278,6 +298,7 @@ export default function App() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-icon"
+                  onMouseEnter={handleUiHover}
                   title="itch.io"
                 >
                   <svg
@@ -298,9 +319,11 @@ export default function App() {
                 <button
                   key={m}
                   className={`mode-btn ${mode === m ? "active" : ""}`}
+                  onMouseEnter={handleUiHover}
                   onClick={() => {
                     sfx.modeSwitch();
-                    if (m !== mode) setQuest((q) => ({ ...q, modeSwitched: true }));
+                    if (m !== mode)
+                      setQuest((q) => ({ ...q, modeSwitched: true }));
                     setMode(m);
                   }}
                 >
@@ -371,7 +394,11 @@ export default function App() {
                     </p>
                   ) : (
                     modeProjects.map((p) => (
-                      <ProjectCard key={p.name} project={p} onExpand={trackProject} />
+                      <ProjectCard
+                        key={p.name}
+                        project={p}
+                        onExpand={trackProject}
+                      />
                     ))
                   )}
                 </motion.div>
@@ -445,6 +472,7 @@ export default function App() {
                         {h === "Dungeons & Dragons" && (
                           <button
                             className="dice-btn"
+                            onMouseEnter={handleUiHover}
                             onClick={handleDndRoll}
                             title="Roll a d20"
                           >
@@ -508,7 +536,7 @@ export default function App() {
       <div className="nav-fab">
         <button
           className="nav-btn"
-          onMouseEnter={() => sfx.navHover()}
+          onMouseEnter={handleUiHover}
           onClick={() => {
             sfx.open();
             setContactOpen(true);
@@ -519,7 +547,7 @@ export default function App() {
         </button>
         <button
           className="nav-btn secondary"
-          onMouseEnter={() => sfx.navHover()}
+          onMouseEnter={handleUiHover}
           onClick={() => {
             sfx.open();
             setCreditsOpen(true);
@@ -530,7 +558,7 @@ export default function App() {
         </button>
         <button
           className="nav-btn secondary"
-          onMouseEnter={() => sfx.navHover()}
+          onMouseEnter={handleUiHover}
           onClick={() => {
             sfx.open();
             setSettingsOpen(true);

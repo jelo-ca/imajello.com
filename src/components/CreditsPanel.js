@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { sfx } from "../utils/sounds";
 
 export default function CreditsPanel({ onClose }) {
   return (
@@ -32,7 +33,11 @@ export default function CreditsPanel({ onClose }) {
 
         <div className="settings-divider" />
 
-        <button className="settings-close" onClick={onClose}>
+        <button
+          className="settings-close"
+          onMouseEnter={() => sfx.navHover()}
+          onClick={onClose}
+        >
           ▶ BACK
         </button>
       </motion.div>

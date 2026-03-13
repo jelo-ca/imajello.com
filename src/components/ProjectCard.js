@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { sfx } from '../utils/sounds';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { sfx } from "../utils/sounds";
 
 const STATUS_STYLE = {
-  'Shipped':     { background: 'var(--charcoal)', color: 'var(--cream)' },
-  'In Progress': { background: 'var(--rose)',     color: 'var(--midnight)' },
-  'Ongoing':     { background: 'var(--sand)',     color: 'var(--charcoal)' },
+  Shipped: { background: "var(--charcoal)", color: "var(--cream)" },
+  "In Progress": { background: "var(--rose)", color: "var(--midnight)" },
+  Ongoing: { background: "var(--sand)", color: "var(--charcoal)" },
 };
 
 export default function ProjectCard({ project, onExpand }) {
@@ -15,25 +15,32 @@ export default function ProjectCard({ project, onExpand }) {
   function handleToggle() {
     const opening = !expanded;
     setExpanded(opening);
-    if (opening) { sfx.open();  onExpand?.(project.name); }
-    else           sfx.close();
+    if (opening) {
+      sfx.open();
+      onExpand?.(project.name);
+    } else sfx.close();
   }
 
   return (
-    <div className={`project-card ${expanded ? 'expanded' : ''}`}>
+    <div className={`project-card ${expanded ? "expanded" : ""}`}>
       <div
         className="project-header"
+        onMouseEnter={() => sfx.navHover()}
         onClick={handleToggle}
         role="button"
         aria-expanded={expanded}
       >
         <div className="project-header-left">
           <span className="project-name">{project.name}</span>
-          {project.dates && <span className="project-dates">{project.dates}</span>}
+          {project.dates && (
+            <span className="project-dates">{project.dates}</span>
+          )}
         </div>
         <div className="project-header-right">
           {project.status && (
-            <span className="project-status" style={statusStyle}>{project.status}</span>
+            <span className="project-status" style={statusStyle}>
+              {project.status}
+            </span>
           )}
           <motion.span
             className="expand-icon"
@@ -50,20 +57,25 @@ export default function ProjectCard({ project, onExpand }) {
           <motion.div
             className="project-details"
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            style={{ overflow: 'hidden' }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            style={{ overflow: "hidden" }}
           >
             <p className="project-description">{project.description}</p>
             <ul className="bullet-list small project-bullets">
               {project.bullets.map((b, i) => (
-                <li key={i}><span className="blt">►</span>{b}</li>
+                <li key={i}>
+                  <span className="blt">►</span>
+                  {b}
+                </li>
               ))}
             </ul>
             <div className="project-tags">
-              {project.tech.map(t => (
-                <span key={t} className="tech-tag">{t}</span>
+              {project.tech.map((t) => (
+                <span key={t} className="tech-tag">
+                  {t}
+                </span>
               ))}
             </div>
             {project.url && (
@@ -72,6 +84,7 @@ export default function ProjectCard({ project, onExpand }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="project-link"
+                onMouseEnter={() => sfx.navHover()}
               >
                 Visit Site →
               </a>

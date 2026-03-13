@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { sfx } from "../utils/sounds";
 
 const SPARKLE_DIRS = [
   { tx: "-14px", ty: "-12px" },
-  { tx:   "0px", ty: "-16px" },
-  { tx:  "14px", ty: "-12px" },
-  { tx:  "16px", ty:   "0px" },
-  { tx:  "14px", ty:  "12px" },
-  { tx:   "0px", ty:  "16px" },
-  { tx: "-14px", ty:  "12px" },
-  { tx: "-16px", ty:   "0px" },
+  { tx: "0px", ty: "-16px" },
+  { tx: "14px", ty: "-12px" },
+  { tx: "16px", ty: "0px" },
+  { tx: "14px", ty: "12px" },
+  { tx: "0px", ty: "16px" },
+  { tx: "-14px", ty: "12px" },
+  { tx: "-16px", ty: "0px" },
 ];
 
 function Sparkles({ active, onDone }) {
@@ -30,11 +31,11 @@ function Sparkles({ active, onDone }) {
 }
 
 const MAIN_QUESTS = [
-  { key: "modeSwitched",   label: "Switch resume style"              },
-  { key: "darkModeOn",     label: "Enable dark mode"                 },
+  { key: "modeSwitched", label: "Switch resume style" },
+  { key: "darkModeOn", label: "Enable dark mode" },
   { key: "projectsOpened", label: "Open 3 projects", progress: true, max: 3 },
-  { key: "creditsRead",    label: "Read the credits"                 },
-  { key: "contactStarted", label: "Begin your journey"               },
+  { key: "creditsRead", label: "Read the credits" },
+  { key: "contactStarted", label: "Begin your journey" },
 ];
 
 const SECRETS_TOTAL = 4;
@@ -45,9 +46,9 @@ function isDone(q, quest) {
 }
 
 export default function QuestLog({ quest, onToggle }) {
-  const doneCnt    = MAIN_QUESTS.filter((q) => isDone(q, quest)).length;
-  const allDone    = doneCnt === MAIN_QUESTS.length;
-  const secrets    = quest.secretsFound?.length ?? 0;
+  const doneCnt = MAIN_QUESTS.filter((q) => isDone(q, quest)).length;
+  const allDone = doneCnt === MAIN_QUESTS.length;
+  const secrets = quest.secretsFound?.length ?? 0;
   const allSecrets = secrets === SECRETS_TOTAL;
 
   const [justDone, setJustDone] = useState({});
@@ -56,7 +57,9 @@ export default function QuestLog({ quest, onToggle }) {
   // Initialize so already-done quests don't animate on mount
   if (prevDone.current === null) {
     const init = {};
-    MAIN_QUESTS.forEach((q) => { init[q.key] = isDone(q, quest); });
+    MAIN_QUESTS.forEach((q) => {
+      init[q.key] = isDone(q, quest);
+    });
     init._secrets = (quest.secretsFound?.length ?? 0) >= SECRETS_TOTAL;
     prevDone.current = init;
   }
@@ -75,18 +78,21 @@ export default function QuestLog({ quest, onToggle }) {
   }, [quest]);
 
   function clear(key) {
-    setJustDone((p) => { const n = { ...p }; delete n[key]; return n; });
+    setJustDone((p) => {
+      const n = { ...p };
+      delete n[key];
+      return n;
+    });
   }
 
   return (
     <div className="quest-widget">
       <button
         className={`quest-toggle${allDone ? " complete" : ""}`}
+        onMouseEnter={() => sfx.navHover()}
         onClick={onToggle}
       >
-        {allDone
-          ? "✦ COMPLETE"
-          : `■ QUESTS [${doneCnt}/${MAIN_QUESTS.length}]`}
+        {allDone ? "✦ COMPLETE" : `■ QUESTS [${doneCnt}/${MAIN_QUESTS.length}]`}
       </button>
       <AnimatePresence>
         {quest.logOpen && (
@@ -104,19 +110,33 @@ export default function QuestLog({ quest, onToggle }) {
             <ul className="quest-list">
               {MAIN_QUESTS.map((q) => {
                 const done = isDone(q, quest);
-                const val  = q.progress ? quest[q.key]?.length ?? 0 : null;
+                const val = q.progress ? quest[q.key]?.length ?? 0 : null;
                 return (
                   <li
                     key={q.key}
-                    className={`quest-item${done ? " done" : ""}${justDone[q.key] ? " just-done" : ""}`}
-                    onAnimationEnd={justDone[q.key] ? (e) => { if (e.animationName === "quest-shake") clear(q.key); } : undefined}
+                    className={`quest-item${done ? " done" : ""}${
+                      justDone[q.key] ? " just-done" : ""
+                    }`}
+                    onAnimationEnd={
+                      justDone[q.key]
+                        ? (e) => {
+                            if (e.animationName === "quest-shake") clear(q.key);
+                          }
+                        : undefined
+                    }
                   >
-                    <Sparkles active={!!justDone[q.key]} onDone={() => clear(q.key)} />
+                    <Sparkles
+                      active={!!justDone[q.key]}
+                      onDone={() => clear(q.key)}
+                    />
                     <span className="quest-check">{done ? "✦" : "○"}</span>
                     <span className="quest-label">
                       {q.label}
                       {q.progress && !done && (
-                        <span className="quest-frac"> {val}/{q.max}</span>
+                        <span className="quest-frac">
+                          {" "}
+                          {val}/{q.max}
+                        </span>
                       )}
                     </span>
                   </li>
@@ -125,14 +145,28 @@ export default function QuestLog({ quest, onToggle }) {
             </ul>
             <div className="quest-divider" />
             <div
-              className={`quest-item quest-secrets${allSecrets ? " done" : ""}${justDone._secrets ? " just-done" : ""}`}
-              onAnimationEnd={justDone._secrets ? (e) => { if (e.animationName === "quest-shake") clear("_secrets"); } : undefined}
+              className={`quest-item quest-secrets${allSecrets ? " done" : ""}${
+                justDone._secrets ? " just-done" : ""
+              }`}
+              onAnimationEnd={
+                justDone._secrets
+                  ? (e) => {
+                      if (e.animationName === "quest-shake") clear("_secrets");
+                    }
+                  : undefined
+              }
             >
-              <Sparkles active={!!justDone._secrets} onDone={() => clear("_secrets")} />
+              <Sparkles
+                active={!!justDone._secrets}
+                onDone={() => clear("_secrets")}
+              />
               <span className="quest-check">{allSecrets ? "✦" : "○"}</span>
               <span className="quest-label">
                 Find the secrets
-                <span className="quest-frac"> {secrets}/{SECRETS_TOTAL}</span>
+                <span className="quest-frac">
+                  {" "}
+                  {secrets}/{SECRETS_TOTAL}
+                </span>
               </span>
             </div>
           </motion.div>

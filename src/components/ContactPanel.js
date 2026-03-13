@@ -1,18 +1,18 @@
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { sfx } from '../utils/sounds';
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { sfx } from "../utils/sounds";
 
-const FORMSPREE = 'https://formspree.io/f/mojkqyjp';
-const MIN_MS    = 3000; // reject submissions faster than this (bot timing check)
+const FORMSPREE = "https://formspree.io/f/mojkqyjp";
+const MIN_MS = 3000; // reject submissions faster than this (bot timing check)
 
 export default function ContactPanel({ onClose }) {
-  const [name, setName]       = useState('');
-  const [email, setEmail]     = useState('');
-  const [message, setMessage] = useState('');
-  const [honeypot, setHoneypot] = useState(''); // must stay empty
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState(""); // must stay empty
   const [submitting, setSubmitting] = useState(false);
-  const [submitted,  setSubmitted]  = useState(false);
-  const [error, setError]           = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
   const openedAt = useRef(Date.now());
 
   async function handleSubmit(e) {
@@ -27,17 +27,20 @@ export default function ContactPanel({ onClose }) {
     if (!name.trim() || !message.trim()) return;
 
     setSubmitting(true);
-    setError('');
+    setError("");
 
     try {
       const res = await fetch(FORMSPREE, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
-          name:     name.trim(),
-          email:    email.trim(),
-          message:  message.trim(),
-          _gotcha:  honeypot, // Formspree server-side honeypot
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+          _gotcha: honeypot, // Formspree server-side honeypot
         }),
       });
 
@@ -47,10 +50,10 @@ export default function ContactPanel({ onClose }) {
         sfx.nat20();
         setSubmitted(true);
       } else {
-        setError(data.error || 'Something went wrong. Try again.');
+        setError(data.error || "Something went wrong. Try again.");
       }
     } catch {
-      setError('Network error. Check your connection.');
+      setError("Network error. Check your connection.");
     } finally {
       setSubmitting(false);
     }
@@ -70,8 +73,8 @@ export default function ContactPanel({ onClose }) {
         initial={{ scale: 0.88, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.88, opacity: 0 }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
-        onClick={e => e.stopPropagation()}
+        transition={{ duration: 0.18, ease: "easeOut" }}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="settings-title">══ CONTACT ══</div>
         <div className="settings-divider" />
@@ -88,7 +91,11 @@ export default function ContactPanel({ onClose }) {
               <p className="contact-success-title">★ MESSAGE SENT ★</p>
               <p className="contact-success-sub">I'll get back to you soon.</p>
               <div className="settings-divider" />
-              <button className="settings-close contact-submit" onClick={onClose}>
+              <button
+                className="settings-close contact-submit"
+                onMouseEnter={() => sfx.navHover()}
+                onClick={onClose}
+              >
                 ▶ CLOSE
               </button>
             </motion.div>
@@ -106,7 +113,7 @@ export default function ContactPanel({ onClose }) {
                   type="text"
                   name="website"
                   value={honeypot}
-                  onChange={e => setHoneypot(e.target.value)}
+                  onChange={(e) => setHoneypot(e.target.value)}
                   tabIndex={-1}
                   autoComplete="off"
                 />
@@ -119,7 +126,7 @@ export default function ContactPanel({ onClose }) {
                   type="text"
                   placeholder="your name"
                   value={name}
-                  onChange={e => setName(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                   required
                   autoFocus
                   disabled={submitting}
@@ -133,7 +140,7 @@ export default function ContactPanel({ onClose }) {
                   type="email"
                   placeholder="your@email.com (optional)"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   disabled={submitting}
                 />
               </div>
@@ -144,7 +151,7 @@ export default function ContactPanel({ onClose }) {
                   className="contact-input contact-textarea"
                   placeholder="say something..."
                   value={message}
-                  onChange={e => setMessage(e.target.value)}
+                  onChange={(e) => setMessage(e.target.value)}
                   required
                   rows={4}
                   disabled={submitting}
@@ -159,6 +166,7 @@ export default function ContactPanel({ onClose }) {
                 <button
                   type="button"
                   className="settings-close"
+                  onMouseEnter={() => sfx.navHover()}
                   onClick={onClose}
                   disabled={submitting}
                 >
@@ -167,9 +175,10 @@ export default function ContactPanel({ onClose }) {
                 <button
                   type="submit"
                   className="settings-close contact-submit"
+                  onMouseEnter={() => sfx.navHover()}
                   disabled={submitting}
                 >
-                  {submitting ? '...' : '▶ SEND IT'}
+                  {submitting ? "..." : "▶ SEND IT"}
                 </button>
               </div>
             </motion.form>
