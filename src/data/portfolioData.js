@@ -7,7 +7,7 @@ export const personalInfo = {
   itch: "https://imajello.itch.io/",
   education: {
     school: "De Anza College",
-    degree: "Associate of Science for Transfer",
+    degree: "AS-T Computer Science",
     gpa: "3.75",
     expected: "Expected March 2026",
     coursework: [
