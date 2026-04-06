@@ -25,7 +25,7 @@
   display: flex;
   justify-content: center;
   align-items: stretch;
-  padding: 1rem 1rem 1.25rem 1rem;
+  padding: 1rem 8rem 1.25rem 8rem;
 }
 
 /* ── KONAMI DARK MODE ── */
@@ -163,23 +163,28 @@
   scrollbar-width: thin;
   scrollbar-color: var(--rose) transparent;
 }
+
 .sheet-sidebar::-webkit-scrollbar,
 .sheet-main::-webkit-scrollbar {
   width: 5px;
 }
+
 .sheet-sidebar::-webkit-scrollbar-track,
 .sheet-main::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .sheet-sidebar::-webkit-scrollbar-thumb,
 .sheet-main::-webkit-scrollbar-thumb {
   background: var(--rose);
   border-radius: 99px;
 }
+
 .sheet-sidebar::-webkit-scrollbar-thumb:hover,
 .sheet-main::-webkit-scrollbar-thumb:hover {
   background: var(--blush);
 }
+
 .konami .sheet-sidebar,
 .konami .sheet-main {
   scrollbar-color: var(--rose) transparent;
@@ -366,8 +371,11 @@
   align-items: start;
 }
 
-@media (max-width: 900px) {
-  html, body, #root {
+@media (max-width: 1000px) {
+
+  html,
+  body,
+  #root {
     height: auto;
     overflow: auto;
   }
@@ -377,6 +385,7 @@
     min-height: 100%;
     overflow: visible;
     align-items: flex-start;
+    padding: 3.5rem 1rem 4.5rem;
   }
 
   .sheet {
@@ -556,6 +565,7 @@
   gap: 0.6rem;
   margin-left: 0.4rem;
 }
+
 .social-icon {
   color: var(--charcoal);
   border-bottom: none !important;
@@ -564,11 +574,15 @@
   opacity: 0.75;
   transition: opacity 0.15s, color 0.15s;
 }
+
 .social-icon:hover {
   color: var(--rose);
   opacity: 1;
 }
-.konami .social-icon { color: var(--sand); }
+
+.konami .social-icon {
+  color: var(--sand);
+}
 
 /* ── ENTRY BLOCKS (education / experience / leadership) ── */
 .entry-block {
@@ -843,7 +857,7 @@
   box-shadow: 4px 4px 0 var(--rose);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1400px) {
   .nav-fab {
     flex-direction: row;
     top: auto;
@@ -1155,6 +1169,7 @@
 .konami .contact-input:focus {
   box-shadow: 2px 2px 0 var(--blush);
 }
+
 /* Honeypot — visually hidden but not display:none (bots detect that) */
 .contact-honeypot {
   position: absolute;
@@ -1162,8 +1177,13 @@
   opacity: 0;
   pointer-events: none;
 }
+
 /* Disabled state */
-.contact-input:disabled { opacity: 0.5; cursor: not-allowed; }
+.contact-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Error */
 .contact-error {
   font-family: 'Press Start 2P', monospace;
@@ -1172,6 +1192,7 @@
   letter-spacing: 0.04em;
   text-align: center;
 }
+
 /* Success screen */
 .contact-success {
   display: flex;
@@ -1180,18 +1201,23 @@
   gap: 0.85rem;
   padding: 1rem 0;
 }
+
 .contact-success-title {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.6rem;
   color: var(--rose);
   letter-spacing: 0.1em;
 }
+
 .contact-success-sub {
   font-family: 'VT323', monospace;
   font-size: 1.15rem;
   color: var(--charcoal);
 }
-.konami .contact-success-sub { color: var(--cream); }
+
+.konami .contact-success-sub {
+  color: var(--cream);
+}
 
 /* ── KONAMI ACHIEVEMENT OVERLAY ── */
 .konami-overlay {
@@ -1372,17 +1398,43 @@
 }
 
 @keyframes quest-shake {
-  0%, 100% { transform: translateX(0); }
-  15%       { transform: translateX(-4px); }
-  35%       { transform: translateX(4px); }
-  55%       { transform: translateX(-3px); }
-  75%       { transform: translateX(3px); }
-  90%       { transform: translateX(-1px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  15% {
+    transform: translateX(-4px);
+  }
+
+  35% {
+    transform: translateX(4px);
+  }
+
+  55% {
+    transform: translateX(-3px);
+  }
+
+  75% {
+    transform: translateX(3px);
+  }
+
+  90% {
+    transform: translateX(-1px);
+  }
 }
 
 @keyframes sparkle-fly {
-  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
-  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
 }
 
 .quest-item.just-done {
@@ -1462,13 +1514,22 @@
   color: var(--cream);
 }
 
-.konami .quest-title { color: var(--rose); }
+.konami .quest-title {
+  color: var(--rose);
+}
 
-.konami .quest-item { color: var(--sand); }
+.konami .quest-item {
+  color: var(--sand);
+}
 
-.konami .quest-item:not(.done) .quest-check { color: var(--sand); }
+.konami .quest-item:not(.done) .quest-check {
+  color: var(--sand);
+}
 
-.konami .quest-divider { border-color: var(--rose); opacity: 0.2; }
+.konami .quest-divider {
+  border-color: var(--rose);
+  opacity: 0.2;
+}
 
 .konami .quest-toggle {
   background: #1a1a19;
@@ -1484,7 +1545,7 @@
   box-shadow: 3px 3px 0 var(--charcoal);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1400px) {
   .quest-widget {
     top: 1rem;
     right: 1rem;
